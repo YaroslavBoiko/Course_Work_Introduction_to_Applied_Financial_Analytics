@@ -1,0 +1,92 @@
+---
+title: "Estimation of the investment project"
+output: html_notebook
+---
+
+library('FinCal')
+library('bitops')
+library('RCurl')
+
+result_NPV <- c()
+result_IRR <- c()
+
+#Simulations
+for (i in 1:10000) {
+  print(i)
+
+  #General data
+  
+  Cost = rtriangle(1,0.5,0.65,0.55)
+  Operating_Expanse = rnorm(1, 0.17, 0.03)
+  
+  # Year №0
+  
+  Net_Profit0 = -3200000
+  
+  # Year №1
+  
+  Package_PRrice = rtriangle(1, 4.9, 5.1, 5)
+  Count = rnorm(1, 903000, 27000)
+  Receipts = Package_Price * Count
+    
+  Cost_All = (Package_Price * Count) * Cost
+  Gross_Profit = Receipts - Cost_All 
+  
+  Operating_Expanse_All =  Gross_Profit * Operating_Expanse
+
+  Net_Income = Gross_Profit - Operating_Expanse_All
+
+  Taxes = 0.3 * Net_Income  
+
+  Net_Profit1 = Net_Income - Taxes
+  
+  #Year №2
+  
+  Package_Price = rtriangle(1, 4.95, 5.1, 5.05)
+  Count = rnorm(1, 1078000, 33000)
+  Receipts = Package_Price * Count
+
+  Cost_All = (Package_Price * Count) * Cost
+  Gross_Profit = Receipts - Cost_All 
+  
+  Operating_Expanse_All =  Gross_Profit * Operating_Expanse
+
+  Net_Income = Gross_Profit - Operating_Expanse_All
+
+  Taxes = 0.3 * Net_Income  
+
+  Net_Profit2 = Net_Income - Taxes
+  
+  #Year №3
+  Package_Price = rtriangle(1, 5, 5.2, 5.1)
+  Count = rnorm(1, 1253000, 27000)
+  Receipts = Package_Price * Count
+
+  Cost_All = (Package_Price * Count) * Cost
+  Gross_Profit = Receipts - Cost_All 
+  
+  Operating_Expanse_All =  Gross_Profit * Operating_Expanse
+
+  Net_Income = Gross_Profit - Operating_Expanse_All
+
+  Taxes = 0.3 * Net_Income  
+
+  Net_Profit3 = Net_Income - Taxes
+  
+  
+  
+  #NPV та IRR
+  
+  new_NPV <- npv(r= 0.1, cf= c(Net_Profit0, Net_Profit1, Net_Profit2, Net_Profit3))
+  result_NPV <- union(result_NPV, c(new_NPV))
+
+  new_IRR <- irr(cf= c(Net_Profit0, Net_Profit1, Net_Profit2, Net_Profit3))
+  result_IRR <- union(result_IRR, c(new_IRR))
+}
+
+hist(result_NPV)
+hist(result_IRR)
+boxplot(result_IRR)
+summary(result_NPV)
+summary(result_IRR)
+
