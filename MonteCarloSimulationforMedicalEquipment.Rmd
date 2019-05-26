@@ -1,0 +1,95 @@
+---
+title: "Estimation of the investment project"
+output: html_notebook
+---
+
+```{r}
+library('FinCal')
+library('bitops')
+library('RCurl')
+library('triangle')
+
+result_NPV <- c()
+result_IRR <- c()
+
+#Simulations
+for (i in 1:10000) {
+  print(i)
+
+  #General data
+  
+  Cost = 0.87
+  Operating_Expanse = rnorm(1, 0.14, 0.02)
+  
+  # Year №0
+  
+  Net_Profit0 = -625.95
+  # Year №1
+  
+  Package_PRrice = rtriangle(1, 6.04, 6.10, 6.08)
+  Count = rnorm(1, 1320000, 600000)
+  Receipts = Package_Price * Count
+    
+  Cost_All = (Package_Price * Count) * Cost
+  Gross_Profit = Receipts - Cost_All 
+  
+  Operating_Expanse_All =  Gross_Profit * Operating_Expanse
+
+  Net_Income = Gross_Profit - Operating_Expanse_All
+
+  Taxes = 0.07 * Net_Income  
+
+  Net_Profit1 = Net_Income - Taxes
+  
+  #Year №2
+  
+  Package_Price = rtriangle(1, 6.45, 6.55, 6.50)
+  Count = rnorm(1, 14400000, 1200000)
+  Receipts = Package_Price * Count
+
+  Cost_All = (Package_Price * Count) * Cost
+  Gross_Profit = Receipts - Cost_All 
+  
+  Operating_Expanse_All =  Gross_Profit * Operating_Expanse
+
+  Net_Income = Gross_Profit - Operating_Expanse_All
+
+  Taxes = 0.07 * Net_Income  
+
+  Net_Profit2 = Net_Income - Taxes
+  
+  #Year №3
+  Package_Price = rtriangle(1, 6.55, 7.10, 7.0)
+  Count = rnorm(1, 15000000, 600000)
+  Receipts = Package_Price * Count
+
+  Cost_All = (Package_Price * Count) * Cost
+  Gross_Profit = Receipts - Cost_All 
+  
+  Operating_Expanse_All =  Gross_Profit * Operating_Expanse
+
+  Net_Income = Gross_Profit - Operating_Expanse_All
+
+  Taxes = 0.07 * Net_Income  
+
+  Net_Profit3 = Net_Income - Taxes
+  
+  
+  
+  #NPV та IRR
+  
+  new_NPV <- npv(r= 0.1, cf= c(Net_Profit0, Net_Profit1, Net_Profit2, Net_Profit3))
+  result_NPV <- union(result_NPV, c(new_NPV))
+
+  new_IRR <- irr(cf= c(Net_Profit0, Net_Profit1, Net_Profit2, Net_Profit3))
+  result_IRR <- union(result_IRR, c(new_IRR))
+}
+
+hist(result_NPV)
+hist(result_IRR)
+boxplot(result_IRR)
+summary(result_NPV)
+summary(result_IRR)
+
+```
+
