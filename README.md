@@ -1,2 +1,2 @@
-# Course_Work_Introduction_to_Applied_Financial_Analytics
+# Course Work Introduction to Applied Financial Analytics
 This project describes the application of numerical methods in assessing the attractiveness of an investment project
